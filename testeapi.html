@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pesquisa de Bandeira</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(45deg, #3498db, #8e44ad, #3498db, #8e44ad);
+            background-size: 300% 300%;
+            animation: gradientAnimation 10s infinite;
+        }
+
+        @keyframes gradientAnimation {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        label {
+            margin-right: 10px;
+            color: white;
+        }
+
+        input {
+            border-radius: 5px 0 0 5px;
+            padding: 5px;
+            border: none;
+            outline: none;
+            color: #333;
+        }
+
+        button {
+            border-radius: 0 5px 5px 0;
+            padding: 5px 10px;
+            cursor: pointer;
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+        }
+
+        #flagResult {
+            margin-top: 20px;
+            text-align: center;
+            color: white;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        p {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Pesquisa de Bandeira por País</h1>
+
+    <div style="display: flex;">
+        <label for="countryName">Nome do País:</label>
+        <input type="text" id="countryName" name="countryName">
+        <button onclick="searchFlag()">Pesquisar</button>
+    </div>
+
+    <div id="flagResult"></div>
+
+    <script>
+        function searchFlag() {
+            var countryName = document.getElementById("countryName").value;
+
+            
+            var apiUrl = "https://restcountries.com/v3.1/name/" + countryName;
+
+           
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                
+                    var flagImageUrl = data[0]?.flags?.png;
+                    var population = data[0]?.population;
+
+                 
+                    if (flagImageUrl) {
+                        var resultDiv = document.getElementById("flagResult");
+                        resultDiv.innerHTML = `<img src="${flagImageUrl}" alt="Bandeira do ${countryName}">`;
+                        if (population) {
+                            resultDiv.innerHTML += `<p>População: ${population}</p>`;
+                        } else {
+                            resultDiv.innerHTML += "<p>Informação de população não disponível.</p>";
+                        }
+                    } else {
+                        document.getElementById("flagResult").innerHTML = "Bandeira não encontrada.";
+                    }
+                })
+                .catch(error => {
+                    console.error("Erro na solicitação da API:", error);
+                    document.getElementById("flagResult").innerHTML = "Erro na solicitação da API.";
+                });
+        }
+    </script>
+
+</body>
+</html>
